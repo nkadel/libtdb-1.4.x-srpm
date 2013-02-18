@@ -1,3 +1,5 @@
 *.rpm
 *.tar.*
+*~
 epel-*
+smbrepo-*
