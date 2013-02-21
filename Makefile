@@ -13,7 +13,7 @@ MOCKS+=samba4repo-6-x86_64
 #MOCKS+=samba4repo-5-x86_64
 #MOCKS+=samba4repo-4-x86_64
 
-REPOBASEDIR=/var/www/mirrors/samba4/
+REPOBASEDIR=/var/www/linux/samba4repo
 
 SPEC := `ls *.spec | head -1`
 PKGNAME := "`ls *.spec | head -1 | sed 's/.spec$$//g'`"
