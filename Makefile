@@ -5,15 +5,15 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-#MOCKS+=smbrepo-6-i386
-#MOCKS+=smbrepo-5-i386
-#MOCKS+=smbrepo-4-i386
+#MOCKS+=samba4repo-6-i386
+#MOCKS+=samba4repo-5-i386
+#MOCKS+=samba4repo-4-i386
 
-MOCKS+=smbrepo-6-x86_64
-#MOCKS+=smbrepo-5-x86_64
-#MOCKS+=smbrepo-4-x86_64
+MOCKS+=samba4repo-6-x86_64
+#MOCKS+=samba4repo-5-x86_64
+#MOCKS+=samba4repo-4-x86_64
 
-REPOBASEDIR=/var/www/mirrors/smbrepo/
+REPOBASEDIR=/var/www/mirrors/samba4/
 
 SPEC := `ls *.spec | head -1`
 PKGNAME := "`ls *.spec | head -1 | sed 's/.spec$$//g'`"
@@ -35,7 +35,7 @@ srpm:: verifyspec FORCE
 		-bs $(SPEC) --nodeps
 
 build:: srpm FORCE
-	rpmbuild --rebuild `ls *.src.rpm | grep -v ^smbrepo-`
+	rpmbuild --rebuild `ls *.src.rpm | grep -v ^samba4repo-`
 
 $(MOCKS):: verifyspec FORCE
 	@if [ -e $@ -a -n "`find $@ -name \*.rpm`" ]; then \

@@ -1,5 +1,4 @@
 *.rpm
 *.tar.*
 *~
-epel-*
-smbrepo-*
+samba4repo*
