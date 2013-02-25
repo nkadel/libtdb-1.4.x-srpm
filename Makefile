@@ -65,10 +65,10 @@ install:: $(MOCKS)
 		srpmdir=$(REPOBASEDIR)/$$yumrelease/SRPMS; \
 		echo "Pushing SRPMS to $$srpmdir"; \
 		sudo rsync -av $$repo/*.src.rpm --no-owner --no-group $$repo/*.src.rpm $$srpmdir/. || exit 1; \
-		sudo createrepo -q -C $$srpmdir/.; \
-		echo "Pushing RPMS to $$rrpmdir"; \
+		sudo createrepo -q $$srpmdir/.; \
+		echo "Pushing RPMS to $$rpmdir"; \
 		sudo rsync -av $$repo/*.rpm --exclude=*.src.rpm --exclude=*debuginfo*.rpm --no-owner --no-group $$repo/*.rpm $$rpmdir/. || exit 1; \
-		sudo createrepo -q -C $$rpmdir/.; \
+		sudo createrepo -q $$rpmdir/.; \
 	    done; \
 	    echo "Deleting /var/cache/mock/$$repo/to clear cache"; \
 	    sudo rm -rf /var/cache/mock/$$repo/; \
