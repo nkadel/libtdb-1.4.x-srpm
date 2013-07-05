@@ -109,7 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n python-tdb -p /sbin/ldconfig
 
 %changelog
-* Thu Jul  4 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.2.12-1
+* Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.2.12-1
 - Update to 1.2.12
 
 * Sun Dec 01 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.2.11-1
