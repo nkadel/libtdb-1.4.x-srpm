@@ -11,7 +11,7 @@ Group: System Environment/Daemons
 Summary: The tdb library
 License: LGPLv3+
 URL: http://tdb.samba.org/
-Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
+Source: http://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: autoconf
