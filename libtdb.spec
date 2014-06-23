@@ -5,8 +5,8 @@
 %{!?python_version: %global python_version %(%{__python} -c "from distutils.sysconfig import get_python_version; print(get_python_version())")}
 
 Name: libtdb
-Version: 1.2.12
-Release: 1%{?dist}
+Version: 1.3.0
+Release: 0.1%{?dist}
 Group: System Environment/Daemons
 Summary: The tdb library
 License: LGPLv3+
@@ -109,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n python-tdb -p /sbin/ldconfig
 
 %changelog
+* Mon Jun 23 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.0-0.1
+- Update to 1.3.0
+
 * Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.2.12-1
 - Update to 1.2.12
 
