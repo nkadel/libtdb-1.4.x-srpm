@@ -9,7 +9,7 @@ MOCKS+=samba4repo-6-x86_64
 #MOCKS+=samba4repo-5-x86_64
 #MOCKS+=samba4repo-4-x86_64
 
-MOCKS+=samba4repo-6-i386
+#MOCKS+=samba4repo-6-i386
 #MOCKS+=samba4repo-5-i386
 #MOCKS+=samba4repo-4-i386
 
