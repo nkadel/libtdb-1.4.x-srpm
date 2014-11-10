@@ -1,4 +1,4 @@
-libtdb-1.2.11-srpm
+libtdb-1.3.1-srpm
 ==================
 
 SRPM building tools for libtdb-1.2.11 for runing Samba 4 on RHEL 6.
@@ -6,15 +6,14 @@ SRPM building tools for libtdb-1.2.11 for runing Samba 4 on RHEL 6.
 These are built from Fedora rawhide releases, and need to be built and
 installed in the following order.
 
-	krb5-1.10.3-srpm
 	iniparser-3.1-srpm
 
-	libtalloc-2.0.8-srpm
-	libtdb-1.2.12-srpm
-	libldb-1.1.16-srpm
-	libtevent-0.9.18-srpm
+	libtalloc-2.1.1-srpm
+	libtdb-1.3.1-srpm
+	libldb-1.1.17-srpm
+	libtevent-0.9.22-srpm
 
-	samba-4.0.7-srpm
+	samba-4.1.x-srpm
 
 The "make" command will do these steps.
 
