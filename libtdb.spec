@@ -132,7 +132,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.2.12-1
 - Update to 1.2.12
 
-* Sun Dec 01 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.2.11-1
+* Mon Dec 01 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.2.11-1
 - New upstream release 1.2.11
 
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.10-16
