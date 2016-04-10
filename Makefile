@@ -5,7 +5,7 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-MOCKS+=samba4repo-f22-x86_64
+MOCKS+=samba4repo-f23-x86_64
 MOCKS+=samba4repo-7-x86_64
 MOCKS+=samba4repo-6-x86_64
 
