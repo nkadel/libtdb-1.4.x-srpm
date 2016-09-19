@@ -5,7 +5,7 @@
 %{!?python_version: %global python_version %(%{__python} -c "from distutils.sysconfig import get_python_version; print(get_python_version())")}
 
 Name: libtdb
-Version: 1.3.8
+Version: 1.3.11
 Release: 0.1%{?dist}
 Group: System Environment/Daemons
 Summary: The tdb library
@@ -110,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n python-tdb -p /sbin/ldconfig
 
 %changelog
+* Sun Sep 18 2016 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.11-0.1
+- Udpate to 1.3.11
+
 * Thu Nov 19 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.8-0.1
 - Udpate to 1.3.8
 
