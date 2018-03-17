@@ -73,6 +73,7 @@ install:: $(MOCKS)
 clean::
 	rm -rf $(MOCKS)
 	rm -rf rpmbuild
+	rm -f *.out
 
 realclean distclean:: clean
 	rm -f *.src.rpm
