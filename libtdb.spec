@@ -1,23 +1,23 @@
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%if 0%{?fedora}
+%global with_python3 1
+%else
+%global with_python3 0
 %endif
-%{!?python_version: %global python_version %(%{__python} -c "from distutils.sysconfig import get_python_version; print(get_python_version())")}
 
 Name: libtdb
 Version: 1.3.15
 Release: 0.1%{?dist}
-Group: System Environment/Daemons
 Summary: The tdb library
 License: LGPLv3+
 URL: http://tdb.samba.org/
-Source: http://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
-BuildRequires: autoconf
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-BuildRequires: python-devel
+BuildRequires: python2-devel
+%if 0%{?with_python3}
+BuildRequires: python3-devel
+%endif
 
 Provides: bundled(libreplace)
 
@@ -27,7 +27,6 @@ Provides: bundled(libreplace)
 A library that implements a trivial database.
 
 %package devel
-Group: Development/Libraries
 Summary: Header files need to link the Tdb library
 Requires: libtdb = %{version}-%{release}
 Requires: pkgconfig
@@ -36,32 +35,51 @@ Requires: pkgconfig
 Header files needed to develop programs that link against the Tdb library.
 
 %package -n tdb-tools
-Group: Development/Libraries
 Summary: Developer tools for the Tdb library
 Requires: libtdb = %{version}-%{release}
 
 %description -n tdb-tools
 Tools to manage Tdb files
 
-%package -n python-tdb
-Group: Development/Libraries
+%package -n python2-tdb
 Summary: Python bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
+%{?python_provide:%python_provide python2-tdb}
 
-%description -n python-tdb
+%description -n python2-tdb
 Python bindings for libtdb
+
+%if 0%{?with_python3}
+%package -n python3-tdb
+Summary: Python3 bindings for the Tdb library
+Requires: libtdb = %{version}-%{release}
+%{?python_provide:%python_provide python3-tdb}
+
+%description -n python3-tdb
+Python3 bindings for libtdb
+%endif
 
 %prep
 %setup -q -n tdb-%{version}
 
 %build
+%if 0%{?with_python3}
+PY3_CONFIG_FLAGS=--extra-python=%{__python3}
+%else
+PY3_CONFIG_FLAGS=""
+%endif
+
 %configure --disable-rpath \
            --bundled-libraries=NONE \
-           --builtin-libraries=replace
+           --builtin-libraries=replace \
+           $PY3_CONFIG_FLAGS
+
 make %{?_smp_mflags} V=1
 
+%check
+make %{?_smp_mflags} check
+
 %install
-rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
@@ -71,22 +89,16 @@ find $RPM_BUILD_ROOT -name "*.so*" -exec chmod -c +x {} \;
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files
-%defattr(-,root,root,-)
 %{_libdir}/libtdb.so.*
 
 %files devel
-%defattr(-,root,root)
 %doc docs/README
 %{_includedir}/tdb.h
 %{_libdir}/libtdb.so
 %{_libdir}/pkgconfig/tdb.pc
 
 %files -n tdb-tools
-%defattr(-,root,root,-)
 %{_bindir}/tdbbackup
 %{_bindir}/tdbdump
 %{_bindir}/tdbtool
@@ -96,50 +108,140 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/tdbtool.8*
 %{_mandir}/man8/tdbrestore.8*
 
-%files -n python-tdb
-%defattr(-,root,root,-)
+%files -n python2-tdb
 %{python_sitearch}/tdb.so
 %{python_sitearch}/_tdb_text.py*
+
+%if 0%{?with_python3}
+%files -n python3-tdb
+%{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
+%{python3_sitearch}/tdb.cpython*.so
+%{python3_sitearch}/_tdb_text.py
+%endif
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-%post -n python-tdb -p /sbin/ldconfig
+%post -n python2-tdb -p /sbin/ldconfig
 
-%postun -n python-tdb -p /sbin/ldconfig
+%postun -n python2-tdb -p /sbin/ldconfig
+
+%if 0%{?with_python3}
+%post -n python3-tdb -p /sbin/ldconfig
+
+%postun -n python3-tdb -p /sbin/ldconfig
+%endif
 
 %changelog
-* Fri Mar 16 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.15-0.1
-- Udpate to 1.3.15
+* Sat Mar 17 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.15-0.1
+= Bring over to older Fedora releases for samba4repo
 
-* Sat Feb 18 2017 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.12-0.1
-- Udpate to 1.3.12
+* Sat Aug 26 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.15-1
+- New upstream release 1.3.15
 
-* Sun Sep 18 2016 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.11-0.1
-- Udpate to 1.3.11
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.14-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
-* Thu Nov 19 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.8-0.1
-- Udpate to 1.3.8
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.14-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
-* Sat Sep  5 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.7-0.1
-- Udpate to 1.3.7
-- Add _tdb_text.py* and tdb.so files to libtdb-python.
+* Mon Jul  3 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.14-1
+- New upstream release 1.3.14
+- run unittests
 
-* Fri Jan 16 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.4-0.1
-- Update to 1.3.4
+* Fri Apr 28 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.13-1
+- New upstream release 1.3.13
+- removed Group fields (new packaging policy)
+- %%defattr() is no longer needed
 
-* Sat Dec 13 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.3-0.1
-- Update to 1.3.3
+* Tue Feb 14 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.12-5
+- rhbz#1401175 - Missing symbol versioning provided by libtdb.so
+- Fix configure time detection with -Werror=implicit-function-declaration
+  -Werror=implicit-int
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
-* Fri Nov  7 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.1-0.1
-- Udpate to 1.3.1
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.12-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
-* Mon Jun 23 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.0-0.1
-- Update to 1.3.0
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.3.12-3
+- Rebuild for Python 3.6
 
-* Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.2.12-1
-- Update to 1.2.12
+* Tue Dec  6 2016 Adam Williamson <awilliam@redhat.com> - 1.3.12-2
+- rebuild with reverted redhat-rpm-config to fix missing library symbols
+
+* Fri Dec  2 2016 Jakub Hrozek <jhrozek@redhat.com> - 1.3.12-1
+- New upstream release 1.3.12
+
+* Tue Aug 30 2016 Jakub Hrozek <jhrozek@redhat.com> - 1.3.11-1
+- New upstream release 1.3.11
+
+* Thu Jul 28 2016 Jakub Hrozek <jhrozek@redhat.com> - 1.3.10-1
+- New upstream release 1.3.10
+
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.9-2
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
+* Wed Apr 27 2016 Jakub Hrozek <jhrozek@redhat.com> - 1.3.9-1
+- New upstream release 1.3.9
+
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.8-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Nov 11 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
+
+* Wed Nov 11 2015 Jakub Hrozek <jhrozek@redhat.com> - 1.3.8-1
+- New upstream release 1.3.8
+
+* Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
+
+* Wed Jul 22 2015 Jakub Hrozek <jhrozek@redhat.com> - 1.3.7-1
+- New upstream release 1.3.7
+- Build Python3 bindings
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Sun Jun 14 2015 Jakub Hrozek <jhrozek@redhat.com> - 1.3.6-1
+- New upstream release 1.3.6
+
+* Wed Apr 29 2015 Jakub Hrozek <jhrozek@redhat.com> - 1.3.5-1
+- New upstream release 1.3.5
+
+* Mon Jan  5 2015 Jakub Hrozek <jhrozek@redhat.com> - 1.3.4-1
+- New upstream release 1.3.4
+
+* Fri Dec  5 2014 Jakub Hrozek <jhrozek@redhat.com> - 1.3.3-1
+- New upstream release 1.3.3
+
+* Thu Sep 18 2014 Jakub Hrozek <jhrozek@redhat.com> - 1.3.1-1
+- New upstream release 1.3.1
+
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri May 23 2014 Adam Williamson <awilliam@redhat.com> - 1.3.0-2
+- add a missing include to tdb.h (fixes builds against libtdb) (BSO #10625)
+
+* Fri May 23 2014 Jakub Hrozek <jhrozek@redhat.com> - 1.3.0-1
+- New upstream release 1.3.0
+
+* Thu Mar 20 2014 Jakub Hrozek <jhrozek@redhat.com> - 1.2.13-1
+- New upstream release 1.2.13
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.12-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Tue Jun 04 2013 Jakub Hrozek <jhrozek@redhat.com> - 1.2.12-1
+- New upstream release 1.2.12
+
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.11-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
 * Sat Dec 01 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.2.11-1
 - New upstream release 1.2.11
