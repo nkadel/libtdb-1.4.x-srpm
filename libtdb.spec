@@ -9,8 +9,8 @@ Version: 1.3.15
 Release: 0.1%{?dist}
 Summary: The tdb library
 License: LGPLv3+
-URL: http://tdb.samba.org/
-Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
+URL: https://tdb.samba.org/
+Source: https://samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
