@@ -1,4 +1,4 @@
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
 %else
 %global with_python3 0
@@ -6,7 +6,7 @@
 
 Name: libtdb
 Version: 1.3.15
-Release: 0.1%{?dist}
+Release: 0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
@@ -134,8 +134,14 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %endif
 
 %changelog
-* Sat Mar 17 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.15-0.1
-= Bring over to older Fedora releases for samba4repo
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.15-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Sat Jan 20 2018 Björn Esser <besser82@fedoraproject.org> - 1.3.15-3
+- Rebuilt for switch to libxcrypt
+
+* Thu Nov 30 2017 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.15-2
+- Update spec file conditionals
 
 * Sat Aug 26 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.15-1
 - New upstream release 1.3.15
