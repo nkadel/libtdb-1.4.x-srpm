@@ -5,13 +5,14 @@
 %endif
 
 Name: libtdb
-Version: 1.3.15
+Version: 1.3.16
 Release: 0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
-URL: https://tdb.samba.org/
-Source: https://samba.org/ftp/tdb/tdb-%{version}.tar.gz
+URL: http://tdb.samba.org/
+Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
+BuildRequires: gcc
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 BuildRequires: python2-devel
@@ -60,13 +61,19 @@ Python3 bindings for libtdb
 %endif
 
 %prep
-%setup -q -n tdb-%{version}
+%autosetup -n tdb-%{version} -p1
 
 %build
 %if 0%{?with_python3}
 PY3_CONFIG_FLAGS=--extra-python=%{__python3}
 %else
 PY3_CONFIG_FLAGS=""
+%endif
+
+%if 0%{?with_python3}
+pathfix.py -n -p -i %{__python2} buildtools/bin/waf
+%else
+sed -i 's|^#!/usr/bin/env python|#!%{__python2}|g' buildtools/bin/waf
 %endif
 
 %configure --disable-rpath \
@@ -109,8 +116,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %{_mandir}/man8/tdbrestore.8*
 
 %files -n python2-tdb
-%{python_sitearch}/tdb.so
-%{python_sitearch}/_tdb_text.py*
+%{python2_sitearch}/tdb.so
+%{python2_sitearch}/_tdb_text.py*
 
 %if 0%{?with_python3}
 %files -n python3-tdb
@@ -134,6 +141,22 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %endif
 
 %changelog
+* Wed Aug 8 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0
+- Provide sed commend instead of pathfix.py for EL 7
+
+* Fri Jul 13 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.3.16-2
+- Drop the unneeded ABI hide patch
+- Use pathfix.py instead of a local patch to munge the python path
+
+* Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.3.16-1
+- New upstream release 1.3.16
+- Apply a patch to hide local ABI symbols to avoid issues with new binutils
+- Patch the waf script to explicitly call python2 as "env python" doesn't
+  yield py2 anymore
+
+* Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.3.15-5
+- Rebuilt for Python 3.7
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.15-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
