@@ -71,7 +71,7 @@ install:: $(MOCKS)
 	    rsync -av $$repo/*.rpm --exclude=*.src.rpm --exclude=*debuginfo*.rpm --no-owner --no-group $$repo/*.rpm $$rpmdir/. || exit 1; \
 	    createrepo -q --update $$rpmdir/.; \
 	    echo "Touching $(PWD)/../$$repo.cfg to clear cache"; \
-	    /bin/touch $(PWD)/../$$repo.cfg; \
+	    /bin/touch --no-dereference $(PWD)/../$$repo.cfg; \
 	done
 
 clean::
