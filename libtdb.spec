@@ -6,11 +6,11 @@
 
 Name: libtdb
 Version: 1.3.16
-Release: 0%{?dist}
+Release: 0.1%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: http://tdb.samba.org/
-Source: http://samba.org/ftp/tdb/tdb-%{version}.tar.gz
+Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
 BuildRequires: gcc
 BuildRequires: libxslt
@@ -141,6 +141,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %endif
 
 %changelog
+* Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0.1
+- Update source URL
+
 * Wed Aug 8 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0
 - Provide sed commend instead of pathfix.py for EL 7
 
