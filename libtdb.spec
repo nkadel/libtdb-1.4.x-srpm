@@ -126,6 +126,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %{python3_sitearch}/_tdb_text.py
 %endif
 
+%if 0%{?fedora} || 0%{?rhel} > 7
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
@@ -139,10 +140,12 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 
 %postun -n python3-tdb -p /sbin/ldconfig
 %endif
+%endif # fedora || el > 7
 
 %changelog
 * Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0.1
 - Update source URL
+- Enable ldconfig only for fedora or el > 7
 
 * Wed Aug 8 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0
 - Provide sed commend instead of pathfix.py for EL 7
