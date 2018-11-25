@@ -127,17 +127,22 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
+%ldconfig_scriptlets
+%ldconfig_scriptlets -n python2-tdb
+%ldconfig_scriptlets -n python3-tdb
+
+%if 0%{?with_python3}
+%ldconfig_scriptlets -n python3-tdb
+%endif
+
+%else
 %post -p /sbin/ldconfig
-
 %postun -p /sbin/ldconfig
-
 %post -n python2-tdb -p /sbin/ldconfig
-
 %postun -n python2-tdb -p /sbin/ldconfig
 
 %if 0%{?with_python3}
 %post -n python3-tdb -p /sbin/ldconfig
-
 %postun -n python3-tdb -p /sbin/ldconfig
 %endif
 %endif # fedora || el > 7
