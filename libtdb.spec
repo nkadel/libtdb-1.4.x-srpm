@@ -1,28 +1,42 @@
 %if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
-%else
-%global with_python3 0
+%endif
+
+%if 0%{?fedora} || 0%{?rhel} < 8
+%global with_python2 1
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
+# We need to sent env PYTHON for python2 only build
+%global export_waf_python export PYTHON=%{__python2}
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
+# python3 is default and therefore python2 need to be set as extra-python
+%global extra_python --extra-python=%{__python2}
 %endif
 
 Name: libtdb
-Version: 1.3.16
+Version: 1.3.18
 Release: 0.1%{?dist}
 Summary: The tdb library
 License: LGPLv3+
-URL: http://tdb.samba.org/
+URL: https://tdb.samba.org/
 Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
+
+# Patches
 
 BuildRequires: gcc
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
+%if 0%{?with_python2}
 BuildRequires: python2-devel
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel
 %endif
 
 Provides: bundled(libreplace)
-
-# Patches
 
 %description
 A library that implements a trivial database.
@@ -30,7 +44,6 @@ A library that implements a trivial database.
 %package devel
 Summary: Header files need to link the Tdb library
 Requires: libtdb = %{version}-%{release}
-Requires: pkgconfig
 
 %description devel
 Header files needed to develop programs that link against the Tdb library.
@@ -42,6 +55,7 @@ Requires: libtdb = %{version}-%{release}
 %description -n tdb-tools
 Tools to manage Tdb files
 
+%if 0%{?with_python2}
 %package -n python2-tdb
 Summary: Python bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
@@ -49,6 +63,7 @@ Requires: libtdb = %{version}-%{release}
 
 %description -n python2-tdb
 Python bindings for libtdb
+%endif
 
 %if 0%{?with_python3}
 %package -n python3-tdb
@@ -64,37 +79,21 @@ Python3 bindings for libtdb
 %autosetup -n tdb-%{version} -p1
 
 %build
-%if 0%{?with_python3}
-PY3_CONFIG_FLAGS=--extra-python=%{__python3}
-%else
-PY3_CONFIG_FLAGS=""
-%endif
-
-%if 0%{?with_python3}
-pathfix.py -n -p -i %{__python2} buildtools/bin/waf
-%else
-sed -i 's|^#!/usr/bin/env python|#!%{__python2}|g' buildtools/bin/waf
-%endif
-
+%{?export_waf_python}
 %configure --disable-rpath \
            --bundled-libraries=NONE \
            --builtin-libraries=replace \
-           $PY3_CONFIG_FLAGS
+           %{?extra_python}
 
 make %{?_smp_mflags} V=1
 
 %check
+%{?export_waf_python}
 make %{?_smp_mflags} check
 
 %install
-
+%{?export_waf_python}
 make install DESTDIR=$RPM_BUILD_ROOT
-
-# Shared libraries need to be marked executable for
-# rpmbuild to strip them and include them in debuginfo
-find $RPM_BUILD_ROOT -name "*.so*" -exec chmod -c +x {} \;
-
-rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 
 %files
 %{_libdir}/libtdb.so.*
@@ -115,9 +114,11 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %{_mandir}/man8/tdbtool.8*
 %{_mandir}/man8/tdbrestore.8*
 
+%if 0%{?with_python2}
 %files -n python2-tdb
 %{python2_sitearch}/tdb.so
 %{python2_sitearch}/_tdb_text.py*
+%endif
 
 %if 0%{?with_python3}
 %files -n python3-tdb
@@ -126,34 +127,21 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 %{python3_sitearch}/_tdb_text.py
 %endif
 
-%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
-%ldconfig_scriptlets -n python2-tdb
-%ldconfig_scriptlets -n python3-tdb
-
-%if 0%{?with_python3}
-%ldconfig_scriptlets -n python3-tdb
-%endif
-
-%else
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%post -n python2-tdb -p /sbin/ldconfig
-%postun -n python2-tdb -p /sbin/ldconfig
-
-%if 0%{?with_python3}
-%post -n python3-tdb -p /sbin/ldconfig
-%postun -n python3-tdb -p /sbin/ldconfig
-%endif
-%endif # fedora || el > 7
 
 %changelog
-* Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0.1
-- Update source URL
-- Enable ldconfig only for fedora or el > 7
+* Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.1
+- Roll back release to avoid rawhide conflicts
+- Include python2/python3 workarounds for Fedora python3 defaults
 
-* Wed Aug 8 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.17-0
-- Provide sed commend instead of pathfix.py for EL 7
+* Tue Feb 26 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.18-1
+- rhbz#1683185 - libtdb-1.3.18 is available
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.17-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Thu Jan 17 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.17-1
+- rhbz#1667472 - libtdb-1.3.17 is available
 
 * Fri Jul 13 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.3.16-2
 - Drop the unneeded ABI hide patch
@@ -162,7 +150,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libtdb.a
 * Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.3.16-1
 - New upstream release 1.3.16
 - Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" doesn't
+- Patch the waf script to explicitly call python2 as "env python" does not
   yield py2 anymore
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.3.15-5
