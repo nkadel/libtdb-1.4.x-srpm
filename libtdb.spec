@@ -127,12 +127,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{python3_sitearch}/_tdb_text.py
 %endif
 
-%ldconfig_scriptlets
+#%%ldconfig_scriptlets
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %changelog
 * Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.1
 - Roll back release to avoid rawhide conflicts
 - Include python2/python3 workarounds for Fedora python3 defaults
+- Swap out ldconfig_scriptlets for RHEL compilation
 
 * Tue Feb 26 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.18-1
 - rhbz#1683185 - libtdb-1.3.18 is available
