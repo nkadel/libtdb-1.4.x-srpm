@@ -1,17 +1,21 @@
 %if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
+%else
+%global with_python3 0
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} < 8
 %global with_python2 1
+%else
+%global with_python2 0
 %endif
 
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
+%if %{with_python2} && ! %{with_python3}
 # We need to sent env PYTHON for python2 only build
 %global export_waf_python export PYTHON=%{__python2}
 %endif
 
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
+%if %{with_python2} && %{with_python3}
 # python3 is default and therefore python2 need to be set as extra-python
 %global extra_python --extra-python=%{__python2}
 %endif
@@ -29,10 +33,10 @@ Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 BuildRequires: gcc
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-%if 0%{?with_python2}
+%if %{with_python2}
 BuildRequires: python2-devel
 %endif
-%if 0%{?with_python3}
+%if %{with_python3}
 BuildRequires: python3-devel
 %endif
 
@@ -55,7 +59,7 @@ Requires: libtdb = %{version}-%{release}
 %description -n tdb-tools
 Tools to manage Tdb files
 
-%if 0%{?with_python2}
+%if %{with_python2}
 %package -n python2-tdb
 Summary: Python bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
@@ -65,7 +69,7 @@ Requires: libtdb = %{version}-%{release}
 Python bindings for libtdb
 %endif
 
-%if 0%{?with_python3}
+%if %{with_python3}
 %package -n python3-tdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
@@ -114,13 +118,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_mandir}/man8/tdbtool.8*
 %{_mandir}/man8/tdbrestore.8*
 
-%if 0%{?with_python2}
+%if %{with_python2}
 %files -n python2-tdb
 %{python2_sitearch}/tdb.so
 %{python2_sitearch}/_tdb_text.py*
 %endif
 
-%if 0%{?with_python3}
+%if %{with_python3}
 %files -n python3-tdb
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
 %{python3_sitearch}/tdb.cpython*.so
