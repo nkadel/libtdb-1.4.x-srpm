@@ -1,8 +1,8 @@
+*.out
 *.rpm
 *.tar.*
+*/
 *[0-9]
-*~
 *\#*
-*.out
+*~
 rpmbuild
-samba4repo*
