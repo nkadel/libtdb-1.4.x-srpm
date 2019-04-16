@@ -1,4 +1,8 @@
-%if 0%{?fedora} || 0%{?rhel} > 7
+# Single python3 version in Fedora, python3_pkgversion macro not available
+%{!?python3_pkgversion:%global python3_pkgversion 3}
+%{!?python2_pkgversion:%global python2_pkgversion 2}
+
+%if 0%{?fedora} || 0%{?rhel} > 6
 %global with_python3 1
 %else
 %global with_python3 0
@@ -22,7 +26,7 @@
 
 Name: libtdb
 Version: 1.3.18
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
@@ -34,11 +38,11 @@ BuildRequires: gcc
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 %if %{with_python2}
-BuildRequires: python2-devel
+BuildRequires: python%{python2_pkgversion}-devel
 %endif
 %if %{with_python3}
-BuildRequires: python3-devel
-%endif
+BuildRequires: python%{python3_pkgversion}-devel
+%endif # with_pytthon3
 
 Provides: bundled(libreplace)
 
@@ -70,14 +74,14 @@ Python bindings for libtdb
 %endif
 
 %if %{with_python3}
-%package -n python3-tdb
+%package -n python%{python3_pkgversion}-tdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
-%{?python_provide:%python_provide python3-tdb}
+%{?python_provide:%python_provide python%{python3_pkgversion}-tdb}
 
-%description -n python3-tdb
+%description -n python%{python3_pkgversion}-tdb
 Python3 bindings for libtdb
-%endif
+%endif # with_python3
 
 %prep
 %autosetup -n tdb-%{version} -p1
@@ -125,17 +129,20 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %if %{with_python3}
-%files -n python3-tdb
+%files -n python%{python3_pkgversion}-tdb
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
 %{python3_sitearch}/tdb.cpython*.so
 %{python3_sitearch}/_tdb_text.py
-%endif
+%endif # with_python3
 
 #%%ldconfig_scriptlets
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %changelog
+* Mon Apr 15 2019 Nico Kadel-Garcia - 1.3.18-0.2
+- Apply python pkgversion
+
 * Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.1
 - Roll back release to avoid rawhide conflicts
 - Include python2/python3 workarounds for Fedora python3 defaults
