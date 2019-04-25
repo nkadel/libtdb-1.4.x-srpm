@@ -1,16 +1,10 @@
 # Single python3 version in Fedora, python3_pkgversion macro not available
 %{!?python3_pkgversion:%global python3_pkgversion 3}
-%{!?python2_pkgversion:%global python2_pkgversion 2}
 
-%if 0%{?fedora} || 0%{?rhel} > 6
 %global with_python3 1
-%else
-%global with_python3 0
-%endif
 
-%if 0%{?fedora} || 0%{?rhel} < 8
 %global with_python2 1
-%else
+%if 0%{?fedora} > 30
 %global with_python2 0
 %endif
 
@@ -26,7 +20,7 @@
 
 Name: libtdb
 Version: 1.3.18
-Release: 0.2%{?dist}
+Release: 0.3%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
@@ -140,6 +134,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
+* Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.3
+- Update python2/python3 logic to discard python2 for Fedora > 30
+
 * Mon Apr 15 2019 Nico Kadel-Garcia - 1.3.18-0.2
 - Apply python pkgversion
 
