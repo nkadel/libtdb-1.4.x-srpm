@@ -5,9 +5,8 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-#                                           
+MOCKS+=fedora-30-x86_64
 MOCKS+=fedora-29-x86_64
-#MOCKS+=samba4repo-8-x86_64
 MOCKS+=epel-7-x86_64
 
 #REPOBASEDIR=/var/www/linux/samba4repo
@@ -15,16 +14,12 @@ REPOBASEDIR:=`/bin/pwd`/../samba4repo
 
 SPEC := `ls *.spec`
 
-all:: verifyspec $(MOCKS)
+all:: $(MOCKS)
 
-# Oddness to get deduced .spec file verified
-verifyspec:: FORCE
-	@if [ ! -e $(SPEC) ]; then \
-	    echo Error: SPEC file $(SPEC) not found, exiting; \
-	    exit 1; \
-	fi
+getsrc:: FORCE
+	spectool -g $(SPEC)
 
-srpm:: verifyspec FORCE
+srpm:: FORCE
 	@echo "Building SRPM with $(SPEC)"
 	rm -rf rpmbuild
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' \
@@ -35,7 +30,7 @@ build:: srpm FORCE
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' \
 		--rebuild rpmbuild/SRPMS/*.src.rpm
 
-$(MOCKS):: verifyspec srpm FORCE
+$(MOCKS):: srpm FORCE
 	@if [ -e $@ -a -n "`find $@ -name \*.rpm`" ]; then \
 		echo "	Skipping RPM populated $@"; \
 	else \
@@ -59,6 +54,8 @@ install:: $(MOCKS)
 		*-8-x86_64) yumrelease=el/8; yumarch=x86_64; ;; \
 		*-29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
 		*-f29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
+		*-30-x86_64) yumrelease=fedora/30; yumarch=x86_64; ;; \
+		*-f30-x86_64) yumrelease=fedora/30; yumarch=x86_64; ;; \
 		*) echo "Unrecognized release for $$repo, exiting" >&2; exit 1; ;; \
 	    esac; \
 	    rpmdir=$(REPOBASEDIR)/$$yumrelease/$$yumarch; \
@@ -69,6 +66,8 @@ install:: $(MOCKS)
 	    echo "Pushing RPMS to $$rpmdir"; \
 	    rsync -av $$repo/*.rpm --exclude=*.src.rpm --exclude=*debuginfo*.rpm --no-owner --no-group $$repo/*.rpm $$rpmdir/. || exit 1; \
 	    createrepo -q --update $$rpmdir/.; \
+	    echo "Touching $(PWD)/../$$repo.cfg to clear cache"; \
+	    /bin/touch --no-dereference $(PWD)/../$$repo.cfg; \
 	done
 
 clean::
