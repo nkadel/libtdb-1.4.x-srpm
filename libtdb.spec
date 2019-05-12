@@ -32,7 +32,7 @@ BuildRequires: gcc
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 %if %{with_python2}
-BuildRequires: python%{python2_pkgversion}-devel
+BuildRequires: python2-devel
 %endif
 %if %{with_python3}
 BuildRequires: python%{python3_pkgversion}-devel
