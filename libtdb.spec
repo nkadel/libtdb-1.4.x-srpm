@@ -134,7 +134,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
-* Sun May 13 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.4
+* Sun May 12 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.4
 - Disable python2 for RHEL 8
 
 * Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.3
