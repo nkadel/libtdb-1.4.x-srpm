@@ -3,24 +3,11 @@
 
 %global with_python3 1
 
-%global with_python2 1
-%if 0%{?fedora} > 30 || 0%{?rhel} > 7
 %global with_python2 0
-%endif
-
-%if %{with_python2} && ! %{with_python3}
-# We need to sent env PYTHON for python2 only build
-%global export_waf_python export PYTHON=%{__python2}
-%endif
-
-%if %{with_python2} && %{with_python3}
-# python3 is default and therefore python2 need to be set as extra-python
-%global extra_python --extra-python=%{__python2}
-%endif
 
 Name: libtdb
-Version: 1.3.18
-Release: 0.4%{?dist}
+Version: 1.4.0
+Release: 0.0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
@@ -84,8 +71,7 @@ Python3 bindings for libtdb
 %{?export_waf_python}
 %configure --disable-rpath \
            --bundled-libraries=NONE \
-           --builtin-libraries=replace \
-           %{?extra_python}
+           --builtin-libraries=replace
 
 make %{?_smp_mflags} V=1
 
@@ -124,7 +110,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with_python3}
 %files -n python%{python3_pkgversion}-tdb
+%if 0%{?fedora} > 0 || 0%{?rhel} > 7
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
+%endif
 %{python3_sitearch}/tdb.cpython*.so
 %{python3_sitearch}/_tdb_text.py
 %endif # with_python3
@@ -134,6 +122,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
+* Sat Jul 27 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.0-0
+- Update to 1.4.0
+- Disable python2 entirely
+- Enabele __pycache__/*.py[co] files only for RHEL 8 or fedora
+
 * Sun May 12 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.18-0.4
 - Disable python2 for RHEL 8
 
