@@ -6,8 +6,8 @@
 %global with_python2 0
 
 Name: libtdb
-Version: 1.4.0
-Release: 0.0%{?dist}
+Version: 1.4.1
+Release: 0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
@@ -59,6 +59,9 @@ Python bindings for libtdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-tdb}
+%if ! %{with_python2}
+Obsoletes: python2-tdb
+%endif
 
 %description -n python%{python3_pkgversion}-tdb
 Python3 bindings for libtdb
