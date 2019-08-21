@@ -6,7 +6,7 @@
 %global with_python2 0
 
 Name: libtdb
-Version: 1.4.1
+Version: 1.4.2
 Release: 0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
@@ -125,6 +125,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
+* Wed Aug 21 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0
+- Update to 1.4.2
+
 * Sat Jul 27 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.0-0
 - Update to 1.4.0
 - Disable python2 entirely
