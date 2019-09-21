@@ -1,8 +1,6 @@
-# Single python3 version in Fedora, python3_pkgversion macro not available
-%{!?python3_pkgversion:%global python3_pkgversion 3}
-
 %global with_python3 1
 
+# Python 2 no longer supported
 %global with_python2 0
 
 Name: libtdb
@@ -14,6 +12,11 @@ URL: https://tdb.samba.org/
 Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
 # Patches
+
+%if (0%{?rhel > 0 && 0%{?rhel} <= 7)
+# Addresses python36- versus python3- dependencies
+BuildRequires: epel-rpm-macros
+%endif
 
 BuildRequires: gcc
 BuildRequires: libxslt
@@ -113,9 +116,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with_python3}
 %files -n python%{python3_pkgversion}-tdb
-%if 0%{?fedora} > 0 || 0%{?rhel} > 7
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
-%endif
 %{python3_sitearch}/tdb.cpython*.so
 %{python3_sitearch}/_tdb_text.py
 %endif # with_python3
