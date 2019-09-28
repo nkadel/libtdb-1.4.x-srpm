@@ -6,7 +6,7 @@
 LANG=C
 
 MOCKS+=fedora-30-x86_64
-#MOCKS+=epel-8-x86_64
+MOCKS+=epel-8-x86_64
 MOCKS+=epel-7-x86_64
 
 MOCKCFGS=samba4repo-f30-x86_64
