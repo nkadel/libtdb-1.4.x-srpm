@@ -13,7 +13,7 @@ Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
 # Patches
 
-%if (0%{?rhel} > 0 && 0%{?rhel} <= 7)
+%if 0%{?rhel} > 0
 # Addresses python36- versus python3- dependencies
 BuildRequires: epel-rpm-macros
 %endif
