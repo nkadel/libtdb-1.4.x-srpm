@@ -126,6 +126,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
+* Mon Dec 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
+- Update to 1.4.3
+
 * Wed Aug 21 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0
 - Update to 1.4.2
 
