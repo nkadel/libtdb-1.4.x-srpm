@@ -4,7 +4,7 @@
 %global with_python2 0
 
 Name: libtdb
-Version: 1.4.2
+Version: 1.4.3
 Release: 0%{?dist}
 Summary: The tdb library
 License: LGPLv3+
