@@ -5,18 +5,14 @@
 
 Name: libtdb
 Version: 1.4.3
-Release: 0%{?dist}
+#Release: 1%%{?dist}
+Release: 0.1%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
 Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
 
 # Patches
-
-%if 0%{?rhel} > 0
-# Addresses python36- versus python3- dependencies
-BuildRequires: epel-rpm-macros
-%endif
 
 BuildRequires: gcc
 BuildRequires: libxslt
@@ -25,7 +21,7 @@ BuildRequires: docbook-style-xsl
 BuildRequires: python2-devel
 %endif
 %if %{with_python3}
-BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python3-devel
 %endif # with_pytthon3
 
 Provides: bundled(libreplace)
@@ -58,15 +54,15 @@ Python bindings for libtdb
 %endif
 
 %if %{with_python3}
-%package -n python%{python3_pkgversion}-tdb
+%package -n python3-tdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
-%{?python_provide:%python_provide python%{python3_pkgversion}-tdb}
+%{?python_provide:%python_provide python3-tdb}
 %if ! %{with_python2}
-Obsoletes: python2-tdb
+Obsoletes: python2-tdb <= %{version}-%{release}
 %endif
 
-%description -n python%{python3_pkgversion}-tdb
+%description -n python3-tdb
 Python3 bindings for libtdb
 %endif # with_python3
 
@@ -115,7 +111,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %if %{with_python3}
-%files -n python%{python3_pkgversion}-tdb
+%files -n python3-tdb
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
 %{python3_sitearch}/tdb.cpython*.so
 %{python3_sitearch}/_tdb_text.py
@@ -126,6 +122,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %changelog
+* Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0.1
+- Discard epel-rpm-macros
+- Use python3 rather than python%%{python3_pkgversion}
+
 * Mon Dec 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
 - Update to 1.4.3
 
