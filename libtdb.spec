@@ -4,7 +4,7 @@
 %global with_python2 0
 
 Name: libtdb
-Version: 1.4.3
+Version: 1.4.5
 #Release: 1%%{?dist}
 Release: 0.1%{?dist}
 Summary: The tdb library
