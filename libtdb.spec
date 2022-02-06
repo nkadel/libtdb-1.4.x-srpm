@@ -4,7 +4,7 @@
 %global with_python2 0
 
 Name: libtdb
-Version: 1.4.5
+Version: 1.4.6
 #Release: 1%%{?dist}
 Release: 0.1%{?dist}
 Summary: The tdb library
@@ -117,11 +117,14 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{python3_sitearch}/_tdb_text.py
 %endif # with_python3
 
-#%%ldconfig_scriptlets
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
+#%%post -p /sbin/ldconfig
+#%%postun -p /sbin/ldconfig
 
 %changelog
+* Sat Feb 5 2022 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.6-0
+- Update to 1.4.6
+
 * Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0.1
 - Discard epel-rpm-macros
 - Use python3 rather than python%%{python3_pkgversion}
