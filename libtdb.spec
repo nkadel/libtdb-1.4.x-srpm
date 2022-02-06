@@ -21,7 +21,7 @@ BuildRequires: docbook-style-xsl
 BuildRequires: python2-devel
 %endif
 %if %{with_python3}
-BuildRequires: python3-devel
+BuildRequires: python%{python3_pkgversion}-devel
 %endif # with_pytthon3
 
 Provides: bundled(libreplace)
@@ -54,7 +54,7 @@ Python bindings for libtdb
 %endif
 
 %if %{with_python3}
-%package -n python3-tdb
+%package -n python%{python3_pkgversion}-tdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
 %{?python_provide:%python_provide python3-tdb}
@@ -62,7 +62,7 @@ Requires: libtdb = %{version}-%{release}
 Obsoletes: python2-tdb <= %{version}-%{release}
 %endif
 
-%description -n python3-tdb
+%description -n python%{python3_pkgversion}-tdb
 Python3 bindings for libtdb
 %endif # with_python3
 
@@ -111,7 +111,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %if %{with_python3}
-%files -n python3-tdb
+%files -n python%{python3_pkgversion}-tdb
 %{python3_sitearch}/__pycache__/_tdb_text.cpython*.py[co]
 %{python3_sitearch}/tdb.cpython*.so
 %{python3_sitearch}/_tdb_text.py
