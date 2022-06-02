@@ -57,7 +57,7 @@ Python bindings for libtdb
 %package -n python%{python3_pkgversion}-tdb
 Summary: Python3 bindings for the Tdb library
 Requires: libtdb = %{version}-%{release}
-%{?python_provide:%python_provide python3-tdb}
+%{?python_provide:%python_provide python%{python3_pkgversion}-tdb}
 %if ! %{with_python2}
 Obsoletes: python2-tdb <= %{version}-%{release}
 %endif
