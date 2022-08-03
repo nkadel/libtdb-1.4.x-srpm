@@ -9,7 +9,7 @@ Release: 0.1%{?dist}
 Summary: The tdb library
 License: LGPLv3+
 URL: https://tdb.samba.org/
-Source: https://www.samba.org/ftp/tdb/tdb-%{version}.tar.gz
+Source: https://download.samba.org/pub/tdb/tdb-%{version}.tar.gz
 
 # Patches
 
