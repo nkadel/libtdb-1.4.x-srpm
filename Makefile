@@ -5,7 +5,7 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-MOCKS+=samba4repo-f37-x86_64
+MOCKS+=samba4repo-f38-x86_64
 MOCKS+=samba4repo-9-x86_64
 MOCKS+=samba4repo-8-x86_64
 #MOCKS+=samba4repo-amz2-x86_64
@@ -61,8 +61,8 @@ install:: $(MOCKS)
 		*-amz2-x86_64) yumrelease=amazon/2; yumarch=x86_64; ;; \
 		*-8-x86_64) yumrelease=el/8; yumarch=x86_64; ;; \
 		*-9-x86_64) yumrelease=el/9; yumarch=x86_64; ;; \
-		*-37-x86_64) yumrelease=fedora/37; yumarch=x86_64; ;; \
-		*-f37-x86_64) yumrelease=fedora/37; yumarch=x86_64; ;; \
+		*-38-x86_64) yumrelease=fedora/38; yumarch=x86_64; ;; \
+		*-f38-x86_64) yumrelease=fedora/38; yumarch=x86_64; ;; \
 		*-rawhide-x86_64) yumrelease=fedora/rawhide; yumarch=x86_64; ;; \
 		*) echo "Unrecognized release for $$repo, exiting" >&2; exit 1; ;; \
 	    esac; \
